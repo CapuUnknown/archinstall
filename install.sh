@@ -94,17 +94,17 @@ hostname() {
   HOSTNM="$result"
 }
 userpw() {
-  title="Hostname"
+  title="User Password"
   type=inputbox
-  text="Select hostname"
+  text="Select user password"
   wt2
   USERPW="$result"
 }
 
 rootpw() {
-  title="Hostname"
+  title="Root Password"
   type=inputbox
-  text="Select hostname"
+  text="Select root password"
   wt2
   ROOTPW="$result"
 }
