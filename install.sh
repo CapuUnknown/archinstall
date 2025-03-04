@@ -2,14 +2,14 @@
 
 main() {
 
-  echo "timedatectl set-timezone Europe/Berlin"
+  timedatectl set-timezone Europe/Berlin
 
   username
   hostname
   device
 
-  echo "pacstrap -K /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed"
-  echo "genfstab -U /mnt/ > /mnt/etc/fstab"
+  echo pacstrap -K /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
+  echo genfstab -U /mnt/ >/mnt/etc/fstab
 }
 
 wt1() {
@@ -51,24 +51,24 @@ device() {
   DEVICE="$result"
   if [[ "$DEVICE" == "/dev/nvme"* ]]; then
 
-    echo "mkfs.ext4 ""$DEVICE""p2"
-    echo "mkfs.fat -F32 ""$DEVICE""p1"
-    echo "mkswap ""$DEVICE""p3"
+    mkfs.ext4 "$DEVICE"p2
+    mkfs.fat -F32 "$DEVICE"p1
+    mkswap "$DEVICE"p3
 
-    echo "mount ""$DEVICE""p2 /mnt"
-    echo "mkdir -pv /mnt/boot/efi"
-    echo "mount ""$DEVICE""p1 /mnt/boot/efi"
-    echo "swapon ""$DEVICE""p3"
+    mount "$DEVICE"p2 /mnt
+    mkdir -pv /mnt/boot/efi
+    mount "$DEVICE"p1 /mnt/boot/efi
+    swapon "$DEVICE"p3
   else
 
-    echo "mkfs.ext4 ""$DEVICE""2"
-    echo "mkfs.fat -F32 ""$DEVICE""1"
-    echo "mkswap ""$DEVICE""3"
+    mkfs.ext4 "$DEVICE"2
+    mkfs.fat -F32 "$DEVICE"1
+    mkswap "$DEVICE"3
 
-    echo "mount ""$DEVICE""2 /mnt"
-    echo "mkdir -pv /mnt/boot/efi"
-    echo "mount ""$DEVICE""1 /mnt/boot/efi"
-    echo "swapon ""$DEVICE""3"
+    mount "$DEVICE"2 /mnt
+    mkdir -pv /mnt/boot/efi
+    mount "$DEVICE"1 /mnt/boot/efi
+    swapon "$DEVICE"3
   fi
 }
 
@@ -77,7 +77,6 @@ username() {
   type=inputbox
   text="Select username"
   wt2
-  echo "$result"
   NAME="$result"
 }
 
@@ -86,7 +85,6 @@ hostname() {
   type=inputbox
   text="Select hostname"
   wt2
-  echo "$result"
   HOSTNAME="$result"
 }
 
@@ -120,6 +118,15 @@ grub-install "$DEVICE"
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "KEYMAP=de-latin1" > /etc/vconsole.conf
+
+# multilib
+# pacman
+# systemctl enable sddm
+# mkdir /home/"$NAME"/AUR
+# (cd /home/"$NAME/AUR" && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
+# yay -S librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
+# QEMU
+# SSH
 REALEND
 
 arch-chroot /mnt sh next.sh
