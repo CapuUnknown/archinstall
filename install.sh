@@ -6,6 +6,8 @@ main() {
 
   username
   hostname
+  userpw
+  rootpw
   device
 
   pacstrap -K /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
@@ -89,9 +91,23 @@ hostname() {
   type=inputbox
   text="Select hostname"
   wt2
-  HOSTNAME="$result"
+  HOSTNM="$result"
+}
+userpw() {
+  title="Hostname"
+  type=inputbox
+  text="Select hostname"
+  wt2
+  USERPW="$result"
 }
 
+rootpw() {
+  title="Hostname"
+  type=inputbox
+  text="Select hostname"
+  wt2
+  ROOTPW="$result"
+}
 main
 #TODO: optional package checkbox
 cat <<REALEND >/mnt/next.sh
@@ -106,13 +122,11 @@ locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "LC_ALL=en_US.UTF-8" >> /etc/locale.conf
 
-echo "$HOSTNAME" > /etc/hostname
-rootpw=($(whiptail --passwordbox --title "Root Password" --text "Select root password" 3>&1 1>&2 2>&3))
-echo "$USER":"$rootpw" | chpasswd
+echo "$HOSTNM" > /etc/hostname
+echo "$USER":"$ROOTPW" | chpasswd
 
 useradd -m -G wheel -s /bin/bash "$NAME" 
-userpw=($(whiptail --passwordbox --title "User Password" --text "Select user password" 3>&1 1>&2 2>&3))
-echo "$NAME":"$userpw" | chpasswd
+echo "$NAME":"$USERPW" | chpasswd
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
