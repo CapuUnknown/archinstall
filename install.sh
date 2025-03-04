@@ -48,7 +48,11 @@ device() {
       break
     fi
   done
+
   DEVICE="$result"
+
+  cfdisk "$DEVICE"
+
   if [[ "$DEVICE" == "/dev/nvme"* ]]; then
 
     mkfs.ext4 "$DEVICE"p2
