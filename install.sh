@@ -8,8 +8,8 @@ main() {
   hostname
   device
 
-  echo pacstrap -K /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
-  echo genfstab -U /mnt/ >/mnt/etc/fstab
+  pacstrap -K /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
+  genfstab -U /mnt/ >/mnt/etc/fstab
 }
 
 wt1() {
