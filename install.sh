@@ -10,7 +10,7 @@ main() {
   rootpw
   device
 
-  pacstrap -K /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
+  pacstrap /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
   genfstab -U /mnt/ >/mnt/etc/fstab
 }
 
@@ -52,7 +52,7 @@ device() {
   done
 
   DEVICE="$result"
-
+  #TODO:Partitioning hint EFI, Root & Swap
   cfdisk "$DEVICE"
 
   if [[ "$DEVICE" == "/dev/nvme"* ]]; then
@@ -95,7 +95,7 @@ hostname() {
 }
 userpw() {
   title="User Password"
-  type=inputbox
+  type=passwordbox
   text="Select user password"
   wt2
   USERPW="$result"
@@ -103,13 +103,15 @@ userpw() {
 
 rootpw() {
   title="Root Password"
-  type=inputbox
+  type=passwordbox
   text="Select root password"
   wt2
   ROOTPW="$result"
 }
 main
 #TODO: optional package checkbox
+#TODO:git clone post install script to desktop
+#TODO:Add password later to install everything for AUR
 cat <<REALEND >/mnt/next.sh
 #!/usr/bin/env bash
 
@@ -137,14 +139,42 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "KEYMAP=de-latin1" > /etc/vconsole.conf
 
-# multilib
-# pacman
-# systemctl enable sddm
-# mkdir /home/"$NAME"/AUR
-# (cd /home/"$NAME/AUR" && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
-# yay -S librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
+sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
+sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
+
+pacman -Syu --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop openssh bluez bluez-utils npm ufw tldr man zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer man-db  jdk-openjdk jdk21-openjdk wine thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip --noconfirm --needed
+pacman -S qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs ufw mono kdeconnect --noconfirm --needed
+
+systemctl enable sddm
+
+mkdir /home/"$NAME"/AUR/
+(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
+yay -S librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
 # QEMU
 # SSH
+# UFW
+
+cat <<EOF > /home/"$NAME"/.config/plasma-localerc
+[Formats]
+LANG=en_US.UTF-8
+LC_ADDRESS=de_DE.UTF-8
+LC_MEASUREMENT=de_DE.UTF-8
+LC_MONETARY=de_DE.UTF-8
+LC_NAME=de_DE.UTF-8
+LC_NUMERIC=de_DE.UTF-8
+LC_PAPER=de_DE.UTF-8
+LC_TELEPHONE=de_DE.UTF-8
+LC_TIME=de_DE.UTF-8
+
+[Translations]
+LANGUAGE=en_US
+EOF
+
+
+echo "______________________________________________________________"
+echo "Installation complete, type "reboot" to reboot your system"
+echo "______________________________________________________________"
 REALEND
 
 arch-chroot /mnt sh next.sh
