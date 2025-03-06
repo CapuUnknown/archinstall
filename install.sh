@@ -124,14 +124,14 @@ locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "LC_ALL=en_US.UTF-8" >> /etc/locale.conf
 
+echo "$HOSTNM" > /etc/hostname
+useradd -m -G wheel -s /bin/bash "$NAME" 
+
 mkdir /home/"$NAME"/AUR/
 (cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
 yay -S qdiskinfo #librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
 
-echo "$HOSTNM" > /etc/hostname
 echo "$USER":"$ROOTPW" | chpasswd
-
-useradd -m -G wheel -s /bin/bash "$NAME" 
 echo "$NAME":"$USERPW" | chpasswd
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
@@ -147,7 +147,7 @@ sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
 sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
 
 pacman -Syu --noconfirm --needed
-# pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop openssh bluez bluez-utils npm ufw tldr man zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer man-db  jdk-openjdk jdk21-openjdk wine thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip ufw mono kdeconnect--noconfirm --needed
+# pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop openssh bluez bluez-utils npm ufw tldr man zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer man-db  jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip ufw mono kdeconnect--noconfirm --needed
 # pacman -S qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs --noconfirm --needed
 
 # systemctl enable sddm
