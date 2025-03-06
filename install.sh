@@ -124,6 +124,10 @@ locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "LC_ALL=en_US.UTF-8" >> /etc/locale.conf
 
+mkdir /home/"$NAME"/AUR/
+(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
+yay -S qdiskinfo #librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
+
 echo "$HOSTNM" > /etc/hostname
 echo "$USER":"$ROOTPW" | chpasswd
 
@@ -143,17 +147,32 @@ sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
 sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
 
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop openssh bluez bluez-utils npm ufw tldr man zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer man-db  jdk-openjdk jdk21-openjdk wine thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip --noconfirm --needed
-pacman -S qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs ufw mono kdeconnect --noconfirm --needed
+# pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop openssh bluez bluez-utils npm ufw tldr man zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer man-db  jdk-openjdk jdk21-openjdk wine thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip ufw mono kdeconnect--noconfirm --needed
+# pacman -S qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs --noconfirm --needed
 
-systemctl enable sddm
+# systemctl enable sddm
+# systemctl enable bluetooth
 
-mkdir /home/"$NAME"/AUR/
-(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
-yay -S librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
-# QEMU
-# SSH
-# UFW
+# mkdir /home/"$NAME"/AUR/
+# (cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
+# yay -S librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
+
+# groupadd libvirtd
+# useradd -g "$NAME" libvirtd
+# usermod -aG libvirt "$NAME"
+# sed -i "s/^#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/" /etc/libvirt/libvirtd.conf
+# sed -i "s/^#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/" /etc/libvirt/libvirtd.conf
+# systemctl enable libvirtd
+
+# echo PasswordAuthentication no > /etc/ssh/ssh_config.d/20-force_publickey_auth.conf
+# echo AuthenticationMethod Publickey >> /etc/ssh/ssh_config.d/20-force_publickey_auth.conf
+
+# ufw enable
+# ufw default deny
+# ufw allow from 192.168.178.0/24
+# ufw allow Deluge
+# ufw limit ssh
+
 
 cat <<EOF > /home/"$NAME"/.config/plasma-localerc
 [Formats]
