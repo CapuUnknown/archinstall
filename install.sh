@@ -158,12 +158,6 @@ systemctl enable libvirtd
 echo PasswordAuthentication no > /etc/ssh/ssh_config.d/20-force_publickey_auth.conf
 echo AuthenticationMethod Publickey >> /etc/ssh/ssh_config.d/20-force_publickey_auth.conf
 
-ufw enable
-ufw default deny
-ufw allow from 192.168.178.0/24
-ufw allow Deluge
-ufw limit ssh
-
 cat <<EOF > /home/"$NAME"/.config/plasma-localerc
 [Formats]
 LANG=en_US.UTF-8
@@ -181,10 +175,18 @@ LANGUAGE=en_US
 EOF
 
 mkdir -pv /home/"$NAME"/Desktop
-cat <<AUR > /home/"$NAME"/Desktop/aur.sh
+touch /home/"$NAME"/Desktop/execute.sh
+chmod 755 /home/"$NAME"/Desktop/execute.sh 
+cat <<AUR > /home/"$NAME"/Desktop/execute.sh
 mkdir -pv /home/"$NAME"/AUR/
-(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
-yay -S qdiskinfo #librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
+(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc)
+yes | yay -S qdiskinfo #librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
+
+ufw enable
+ufw default deny
+ufw allow from 192.168.178.0/24
+ufw allow Deluge
+ufw limit ssh
 AUR
 
 echo "______________________________________________________________"
