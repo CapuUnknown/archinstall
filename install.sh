@@ -128,7 +128,7 @@ echo "$HOSTNM" > /etc/hostname
 useradd -m -G wheel -s /bin/bash "$NAME" 
 
 mkdir /home/"$NAME"/AUR/
-(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$USER"/AUR/yay && makepkg -sirc)
+(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc)
 yay -S qdiskinfo #librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
 
 echo "$USER":"$ROOTPW" | chpasswd
