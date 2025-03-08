@@ -111,15 +111,9 @@ rootpw() {
 main
 
 #TODO: optional package checkbox
-#TODO: Starship
-#TODO: agave font
-#TODO: konsole profile
-#TODO: Dolphin config
-#TODO: scp apps or configs from file server
-#TODO: Keyboard shortcuts
-#TODO: Default applications
-#TODO: autostart
-#TODO: VPNs
+#TODO: one time service to launch next script after restart
+#TODO: Whiptail to launch next script
+#TODO: Password after AUR(?)
 
 cat <<REALEND >/mnt/next.sh
 #!/usr/bin/env bash
@@ -133,55 +127,58 @@ locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "LC_ALL=en_US.UTF-8" >> /etc/locale.conf
 
-read -p "debug"
 echo "$HOSTNM" > /etc/hostname
 echo "$USER":"$ROOTPW" | chpasswd
 
 useradd -m -G wheel -s /bin/bash "$NAME" 
 echo "$NAME":"$USERPW" | chpasswd
 
-read -p "debug"
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
 systemctl enable NetworkManager
 
-read -p "debug"
 grub-install "$DEVICE"
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "KEYMAP=de-latin1" > /etc/vconsole.conf
 
-read -p "debug"
 sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
 sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
 
-read -p "debug"
 pacman -Syu --noconfirm --needed
-read -p "debug"
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw tldr man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget --noconfirm --needed
-read -p "debug"
-pacman -S qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw tldr man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs --noconfirm --needed
 
-read -p "debug"
 tldr --update
 systemctl enable sddm
 systemctl enable bluetooth
+systemctl enable sshd
 
-read -p "debug"
 groupadd libvirtd
 useradd -g "$NAME" libvirtd
 usermod -aG libvirt "$NAME"
-read -p "debug"
 sed -i "s/^#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/" /etc/libvirt/libvirtd.conf
 sed -i "s/^#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/" /etc/libvirt/libvirtd.conf
 systemctl enable libvirtd
-read -p "debug"
 
 echo "#PasswordAuthentication no" > /etc/ssh/ssh_config.d/20-force_publickey_auth.conf         #configure manually
 echo "#AuthenticationMethod Publickey" >> /etc/ssh/ssh_config.d/20-force_publickey_auth.conf   #configure manually
-read -p "debug"
 
-mkdir -pv /home/"$NAME"/.config
+(cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
+(cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch)
+(cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
+
+(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv && rm /home/"$NAME"/.local/share/fonts/*)
+(cd /home/"$NAME"/git && git clone https://github.com/CapuUnknown/my-scripts.git)
+ln -s /home/"$NAME"/git/my-scripts/nvim /home/"$NAME"/.config
+ln -s /home/"$NAME"/git/my-scripts/formatter.sh /usr/local/bin/formatter.sh
+ln -s /home/"$NAME"/git/my-scripts/imagewriter.sh /usr/local/bin/imagewriter.sh
+ln -s /home/"$NAME"/git/my-scripts/subs.sh /usr/local/bin/subs.sh
+ln -s /home/"$NAME"/git/my-scripts/subs-all.sh /usr/local/bin/subs-all.sh
+ln -s /home/"$NAME"/git/my-scripts/zen-iw.sh /usr/local/bin/zen-iw.sh
+ln -s /home/"$NAME"/git/my-scripts/zen-subs.sh /usr/local/bin/zen-subs.sh
+ln -s /home/"$NAME"/git/my-scripts/zipper.sh /usr/local/bin/zipper.sh
+
+
 cat <<EOF > /home/"$NAME"/.config/plasma-localerc
 [Formats]
 LANG=en_US.UTF-8
@@ -197,23 +194,12 @@ LC_TIME=de_DE.UTF-8
 [Translations]
 LANGUAGE=en_US
 EOF
-read -p "debug"
 
-mkdir -pv /home/"$NAME"/Desktop
-touch /home/"$NAME"/Desktop/execute.sh
-chmod 755 /home/"$NAME"/Desktop/execute.sh 
-
-read -p "debug"
-mkdir -pv /home/"$NAME"/.local/share/fonts
-(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv)
-read -p "debug"
-
-cat <<AUR > /home/"$NAME"/Desktop/execute.sh
+install -m 755 <(cat <<AUR
 #!/usr/bin/env bash
 
-mkdir -pv /home/"$NAME"/AUR/
 (cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc)
-yes | yay -S qdiskinfo librewolf-bin wtf wireguird polymc vesktop qdiskinfo mono-git
+yes | yay -S qdiskinfo librewolf-bin wtf wireguird polymc vesktop qdiskinfo mono-git --mflags "--skippgpcheck"
 
 cat <<UFW > /home/"$NAME"/Desktop/ufww.sh
 #!/usr/bin/env bash
@@ -231,63 +217,16 @@ ufw limit ssh
 rm /home/"$NAME"/Desktop/ufww.sh
 UFW
 
-sudo /home/"$NAME"/Desktop/ufww.sh
+sudo sh /home/"$NAME"/Desktop/ufww.sh
 
 flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonlight_stream.Moonlight com.spotify.Client com.vysp3r.ProtonPlus io.github.Qalculate io.github.flattool.Warehouse io.github.giantpinkrobots.flatsweep io.github.peazip.PeaZip io.missioncenter.MissionCenter me.timschneeberger.GalaxyBudsClient net.lutris.Lutris net.pcsx2.PCSX2 net.rpcs3.RPCS3 org.duckstation.DuckStation org.raspberrypi.rpi-imager -y
 
 rm /home/"$NAME"/Desktop/execute.sh
 AUR
+) /home/"$NAME"/Desktop/execute.sh
 
-read -p "debug"
-cat << STSH > /home/"$NAME"/.config/starship.toml
-format = """\
-[](bg:#232627 fg:#7DF9AA)\
-[ ](bg:#7DF9AA fg:#000000)\
-[](fg:#7DF9AA bg:#1C3A5E)\
-$time[](fg:#1C3A5E bg:#3B76F0)\
-$directory[](fg:#3B76F0 bg:#FCF392)\
-$git_branch$git_status$git_metrics[](fg:#FCF392 bg:#232627)\
-$character"""
+chown "$NAME":"$NAME" /home/"$NAME"/Desktop/execute.sh
 
-[directory]
-format = "[  $path ]($style)"
-style = "fg:#E4E4E4 bg:#3B76F0"
-
-[git_branch]
-format = '[ $symbol$branch(:$remote_branch) ]($style)'
-symbol = "  "
-style = "fg:#1C3A5E bg:#FCF392"
-
-[git_status]
-format = '[$all_status]($style)'
-style = "fg:#1C3A5E bg:#FCF392"
-
-[git_metrics]
-format = "([+$added]($added_style))[]($added_style)"
-added_style = "fg:#1C3A5E bg:#FCF392"
-deleted_style = "fg:bright-red bg:235"
-disabled = false
-
-[hg_branch]
-format = "[ $symbol$branch ]($style)"
-symbol = " "
-
-[cmd_duration]
-format = "[  $duration ]($style)"
-style = "fg:bright-white bg:18"
-
-[character]
-success_symbol = '[ ➜](bold green) '
-error_symbol = '[ ✗](#E84D44) '
-
-[time]
-disabled = false
-time_format = "%R" # Hour:Minute Format
-style = "bg:#1d2230"
-format = '[[ 󱑍 $time ](bg:#1C3A5E fg:#8DFBD2)]($style)'
-STSH
-
-read -p "debug"
 cat <<BRC > /home/"$NAME"/.bashrc
 #
 # ~/.bashrc
@@ -342,13 +281,14 @@ HISTFILE=~/.bash_history
 export MANPAGER='nvim +Man!'
 BRC
 
-read -p "debug"
 echo "___________________________________________________________"
-echo "Installation complete, type "reboot" to reboot your system"
+echo "Installation complete, system will reboot in 5 seconds"
 echo "___________________________________________________________"
+
+sleep 5
 
 REALEND
 
 arch-chroot /mnt sh next.sh
 
-#reboot
+reboot now
