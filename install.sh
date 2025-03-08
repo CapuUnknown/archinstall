@@ -165,12 +165,11 @@ usermod -aG libvirt "$NAME"
 sed -i "s/^#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/" /etc/libvirt/libvirtd.conf
 sed -i "s/^#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/" /etc/libvirt/libvirtd.conf
 systemctl enable libvirtd
-virsh net-start default
-virsh net-autostart default
 
 echo "#PasswordAuthentication no" > /etc/ssh/ssh_config.d/20-force_publickey_auth.conf         #configure manually
 echo "#AuthenticationMethod Publickey" >> /etc/ssh/ssh_config.d/20-force_publickey_auth.conf   #configure manually
 
+mkdir -pv /home/"$NAME"/.config
 cat <<EOF > /home/"$NAME"/.config/plasma-localerc
 [Formats]
 LANG=en_US.UTF-8
@@ -191,17 +190,29 @@ mkdir -pv /home/"$NAME"/Desktop
 touch /home/"$NAME"/Desktop/execute.sh
 chmod 755 /home/"$NAME"/Desktop/execute.sh 
 
+mkdir -pv /home/"$NAME"/.local/share/fonts
+(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv)
+
 cat <<AUR > /home/"$NAME"/Desktop/execute.sh
+#!/usr/bin/env bash
+
 mkdir -pv /home/"$NAME"/AUR/
 (cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc)
 yes | yay -S qdiskinfo librewolf-bin wtf wireguird polymc vesktop qdiskinfo mono-git
 
 cat <<UFW > /home/"$NAME"/Desktop/ufww.sh
+#!/usr/bin/env bash
+
 localectl set-keymap de-latin1
+
+virsh net-start default
+virsh net-autostart default
+
 ufw enable
 ufw allow from 192.168.178.0/24
 ufw allow Deluge
 ufw limit ssh
+
 rm /home/"$NAME"/Desktop/ufww.sh
 UFW
 
