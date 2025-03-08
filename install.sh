@@ -119,6 +119,7 @@ main
 #TODO: Keyboard shortcuts
 #TODO: Default applications
 #TODO: autostart
+#TODO: VPNs
 
 cat <<REALEND >/mnt/next.sh
 #!/usr/bin/env bash
@@ -151,7 +152,7 @@ sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
 sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
 
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop openssh bluez bluez-utils npm ufw tldr man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw tldr man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget --noconfirm --needed
 pacman -S qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs --noconfirm --needed
 
 tldr --update
@@ -164,9 +165,11 @@ usermod -aG libvirt "$NAME"
 sed -i "s/^#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/" /etc/libvirt/libvirtd.conf
 sed -i "s/^#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/" /etc/libvirt/libvirtd.conf
 systemctl enable libvirtd
+virsh net-start default
+virsh net-autostart default
 
-echo PasswordAuthentication no > /etc/ssh/ssh_config.d/20-force_publickey_auth.conf
-echo AuthenticationMethod Publickey >> /etc/ssh/ssh_config.d/20-force_publickey_auth.conf
+echo "#PasswordAuthentication no" > /etc/ssh/ssh_config.d/20-force_publickey_auth.conf         #configure manually
+echo "#AuthenticationMethod Publickey" >> /etc/ssh/ssh_config.d/20-force_publickey_auth.conf   #configure manually
 
 cat <<EOF > /home/"$NAME"/.config/plasma-localerc
 [Formats]
@@ -266,6 +269,9 @@ BRC
 echo "___________________________________________________________"
 echo "Installation complete, type "reboot" to reboot your system"
 echo "___________________________________________________________"
+
 REALEND
 
 arch-chroot /mnt sh next.sh
+
+#reboot
