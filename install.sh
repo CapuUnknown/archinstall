@@ -109,8 +109,17 @@ rootpw() {
   ROOTPW="$result"
 }
 main
+
 #TODO: optional package checkbox
-#TODO: git clone post install script to desktop or write to Desktop
+#TODO: Starship
+#TODO: agave font
+#TODO: konsole profile
+#TODO: Dolphin config
+#TODO: scp apps or configs from file server
+#TODO: Keyboard shortcuts
+#TODO: Default applications
+#TODO: autostart
+
 cat <<REALEND >/mnt/next.sh
 #!/usr/bin/env bash
 
@@ -142,9 +151,10 @@ sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
 sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
 
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop openssh bluez bluez-utils npm ufw tldr man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip ufw mono kdeconnect --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop openssh bluez bluez-utils npm ufw tldr man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak --noconfirm --needed
 pacman -S qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs --noconfirm --needed
 
+tldr --update
 systemctl enable sddm
 systemctl enable bluetooth
 
@@ -177,21 +187,85 @@ EOF
 mkdir -pv /home/"$NAME"/Desktop
 touch /home/"$NAME"/Desktop/execute.sh
 chmod 755 /home/"$NAME"/Desktop/execute.sh 
+
 cat <<AUR > /home/"$NAME"/Desktop/execute.sh
 mkdir -pv /home/"$NAME"/AUR/
 (cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc)
-yes | yay -S qdiskinfo #librewolf-bin wtf wireguird gpu-passthrough-manager polymc vesktop galaxybudsclient-bin qdiskinfo auto-cpufreq mono-git
+yes | yay -S qdiskinfo librewolf-bin wtf wireguird polymc vesktop qdiskinfo mono-git
 
+cat <<UFW > /home/"$NAME"/Desktop/ufww.sh
+localectl set-keymap de-latin1
 ufw enable
-ufw default deny
 ufw allow from 192.168.178.0/24
 ufw allow Deluge
 ufw limit ssh
+rm /home/"$NAME"/Desktop/ufww.sh
+UFW
+
+sudo /home/"$NAME"/Desktop/ufww.sh
+
+flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonlight_stream.Moonlight com.spotify.Client com.vysp3r.ProtonPlus io.github.Qalculate io.github.flattool.Warehouse io.github.giantpinkrobots.flatsweep io.github.peazip.PeaZip io.missioncenter.MissionCenter me.timschneeberger.GalaxyBudsClient net.lutris.Lutris net.pcsx2.PCSX2 net.rpcs3.RPCS3 org.duckstation.DuckStation org.raspberrypi.rpi-imager -y
+
+rm /home/"$NAME"/Desktop/execute.sh
 AUR
 
-echo "______________________________________________________________"
+cat <<BRC > /home/"$NAME"/.bashrc
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# Aliases
+alias s='source ~/.bashrc'
+alias c='clear'
+alias v='nvim'
+# alias sudo='sudo '
+alias cat='bat'
+alias fzf='fzf --preview="cat {}"'
+alias find='find 2>/dev/null'
+alias ls='lsd --color=auto'
+alias ll='ls -alF --color=auto'
+alias grep='grep --color=auto'
+alias disk='df -h'
+alias ga='git add .'
+alias gc='git commit'
+alias gp='git push origin main'
+alias gs='git status'
+alias renamer='renamer.sh'
+alias zipper='zipper.sh'
+alias subs='subs.sh'
+alias subs-all='subs-all.sh'
+alias convert='convert.sh'
+alias formatter='formatter.sh'
+alias imagewriter='imagewriter.sh'
+alias starpoint='ssh -Y capu@starpoint'
+alias centurion='ssh -Y capu@centurion'
+alias capuserver='ssh capu@192.168.178.57'
+
+PS1='[\u@\h \W]\$ '
+
+# Starship
+eval "$(starship init bash)"
+
+# Eternal bash history.
+export HISTFILESIZE=
+export HISTSIZE=
+
+# Fastfetch
+fastfetch
+
+# fzf list & search
+source <(fzf --bash)
+HISTFILE=~/.bash_history
+
+export MANPAGER='nvim +Man!'
+BRC
+
+echo "___________________________________________________________"
 echo "Installation complete, type "reboot" to reboot your system"
-echo "______________________________________________________________"
+echo "___________________________________________________________"
 REALEND
 
 arch-chroot /mnt sh next.sh
