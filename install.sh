@@ -215,13 +215,17 @@ ufw allow Deluge
 ufw limit ssh
 
 rm /home/"$NAME"/Desktop/ufww.sh
+
+exit
 UFW
 
 sudo sh /home/"$NAME"/Desktop/ufww.sh
 
 flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonlight_stream.Moonlight com.spotify.Client com.vysp3r.ProtonPlus io.github.Qalculate io.github.flattool.Warehouse io.github.giantpinkrobots.flatsweep io.github.peazip.PeaZip io.missioncenter.MissionCenter me.timschneeberger.GalaxyBudsClient net.lutris.Lutris net.pcsx2.PCSX2 net.rpcs3.RPCS3 org.duckstation.DuckStation org.raspberrypi.rpi-imager -y
 
-rm /home/"$NAME"/Desktop/execute.sh
+sudo rm /home/"$NAME"/Desktop/execute.sh
+
+exit
 AUR
 ) /home/"$NAME"/Desktop/execute.sh
 
