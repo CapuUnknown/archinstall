@@ -160,6 +160,11 @@ sed -i "s/^#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/" /etc/libvi
 sed -i "s/^#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/" /etc/libvirt/libvirtd.conf
 systemctl enable libvirtd
 
+cat <<LIB > /etc/sddm.conf
+[Users]
+HideUsers=libvirt
+LIB
+
 echo "#PasswordAuthentication no" > /etc/ssh/ssh_config.d/20-force_publickey_auth.conf         #configure manually
 echo "#AuthenticationMethod Publickey" >> /etc/ssh/ssh_config.d/20-force_publickey_auth.conf   #configure manually
 
