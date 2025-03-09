@@ -93,21 +93,45 @@ hostname() {
   wt2
   HOSTNM="$result"
 }
+
 userpw() {
   title="User Password"
   type=passwordbox
   text="Select user password"
-  wt2
-  USERPW="$result"
+  while true;do
+    wt2
+    USERPW="$result"
+    text="Confirm user password"
+    wt2
+    CONFPW="$result"
+    if [[ "$USERPW" == "$CONFPW" ]];then
+      break
+    else
+      text="Please try again, select user password"
+      continue
+    fi
+  done
 }
 
 rootpw() {
   title="Root Password"
   type=passwordbox
   text="Select root password"
-  wt2
-  ROOTPW="$result"
+  while true;do
+    wt2
+    ROOTPW="$result"
+    text="Confirm root password"
+    wt2
+    CONDPW="$result"
+    if [[ "$ROOTPW" == "$CONDPW" ]];then
+      break
+    else
+      text="Please try again, select root password"
+      continue
+    fi
+  done
 }
+
 main
 
 #TODO: optional package checkbox
