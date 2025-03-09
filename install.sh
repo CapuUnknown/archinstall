@@ -172,7 +172,7 @@ echo "#AuthenticationMethod Publickey" >> /etc/ssh/ssh_config.d/20-force_publick
 (cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch)
 (cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
 
-(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv && rm /home/"$NAME"/.local/share/fonts/*)
+(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv)
 (cd /home/"$NAME"/git && git clone https://github.com/CapuUnknown/my-scripts.git)
 ln -s /home/"$NAME"/git/my-scripts/nvim /home/"$NAME"/.config
 ln -s /home/"$NAME"/git/my-scripts/formatter.sh /usr/local/bin/formatter.sh
