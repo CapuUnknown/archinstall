@@ -98,13 +98,13 @@ userpw() {
   title="User Password"
   type=passwordbox
   text="Select user password"
-  while true;do
+  while true; do
     wt2
     USERPW="$result"
     text="Confirm user password"
     wt2
     CONFPW="$result"
-    if [[ "$USERPW" == "$CONFPW" ]];then
+    if [[ "$USERPW" == "$CONFPW" ]]; then
       break
     else
       text="Please try again, select user password"
@@ -117,13 +117,13 @@ rootpw() {
   title="Root Password"
   type=passwordbox
   text="Select root password"
-  while true;do
+  while true; do
     wt2
     ROOTPW="$result"
     text="Confirm root password"
     wt2
     CONDPW="$result"
-    if [[ "$ROOTPW" == "$CONDPW" ]];then
+    if [[ "$ROOTPW" == "$CONDPW" ]]; then
       break
     else
       text="Please try again, select root password"
@@ -189,8 +189,8 @@ cat <<LIB > /etc/sddm.conf
 HideUsers=libvirt
 LIB
 
-echo "#PasswordAuthentication no" > /etc/ssh/ssh_config.d/20-force_publickey_auth.conf         #configure manually
-echo "#AuthenticationMethod Publickey" >> /etc/ssh/ssh_config.d/20-force_publickey_auth.conf   #configure manually
+echo "#PasswordAuthentication no" > /etc/ssh/sshd_config.d/20-force_publickey_auth.conf         #configure manually
+echo "#AuthenticationMethod Publickey" >> /etc/ssh/sshd_config.d/20-force_publickey_auth.conf   #configure manually
 
 (cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
 (cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch)
