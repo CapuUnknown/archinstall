@@ -134,6 +134,7 @@ rootpw() {
 
 main
 
+#TODO: enable cronie.service before running timeshift wizard
 #TODO: auto-cpufreq & other Laptop packages and utilities
 #TODO: DM, DE and browser choice
 #TODO: optional package checkbox
