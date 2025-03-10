@@ -134,6 +134,7 @@ rootpw() {
 
 main
 
+#TODO: DM, DE and browser choice
 #TODO: optional package checkbox
 #TODO: one time service to launch next script after restart
 #TODO: Whiptail to launch next script
@@ -170,7 +171,22 @@ sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
 sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
 
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw tldr man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools --noconfirm --needed
+
+# Login Manager/Desktp Manager
+# ly sddm lightdm gdm etc
+#
+# Desktop Environemnt
+# xfce plasma gnome cinnamon etc
+#
+# Browser
+# LibreWolf Brave Midori QuteBrowser etc Chromium Gecko
+#
+# Terminal emulator
+# konsole kitty alacritty ghostty etc
+#
+# shell
+# bash zsh fish etc
 
 tldr --update
 systemctl enable sddm
