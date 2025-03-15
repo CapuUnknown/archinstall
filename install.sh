@@ -242,6 +242,11 @@ LC_TIME=de_DE.UTF-8
 LANGUAGE=en_US
 EOF
 
+cat <<KWL > /home/"$NAME"/.config/kwalletrc
+[Wallet]
+Enabled=false
+KWL
+
 install -m 755 <(cat <<AUR
 #!/usr/bin/env bash
 
