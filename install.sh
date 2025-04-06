@@ -143,39 +143,6 @@ main
 #TODO: Password after AUR(?)
 #TODO: custom grub.cfg
 
-cat <<REALEND >/mnt/next.sh
-#!/usr/bin/env bash
-
-ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
-hwclock --systohc
-
-sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
-sed -i "s/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/" /etc/locale.gen
-locale-gen
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
-echo "LC_ALL=en_US.UTF-8" >> /etc/locale.conf
-
-echo "$HOSTNM" > /etc/hostname
-echo "$USER":"$ROOTPW" | chpasswd
-
-useradd -m -G wheel -s /bin/bash "$NAME" 
-echo "$NAME":"$USERPW" | chpasswd
-
-sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
-
-systemctl enable NetworkManager
-
-grub-install "$DEVICE"
-grub-mkconfig -o /boot/grub/grub.cfg
-
-echo "KEYMAP=de-latin1" > /etc/vconsole.conf
-
-sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
-sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
-
-pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv --noconfirm --needed
-
 # Login Manager/Desktp Manager
 # ly sddm lightdm gdm etc
 #
@@ -191,10 +158,53 @@ pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-w
 # shell
 # bash zsh fish etc
 
+cat <<REALEND >/mnt/next.sh
+#!/usr/bin/env bash
+
+ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+hwclock --systohc
+
+
+sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
+sed -i "s/^#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/" /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "LC_ALL=en_US.UTF-8" >> /etc/locale.conf
+
+
+echo "$HOSTNM" > /etc/hostname
+echo "$USER":"$ROOTPW" | chpasswd
+
+
+useradd -m -G wheel -s /bin/bash "$NAME" 
+echo "$NAME":"$USERPW" | chpasswd
+
+
+sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
+
+
+systemctl enable NetworkManager
+
+
+grub-install "$DEVICE"
+grub-mkconfig -o /boot/grub/grub.cfg
+
+
+echo "KEYMAP=de-latin1" > /etc/vconsole.conf
+
+
+sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
+sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
+
+pacman -Syu --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv --noconfirm --needed
+
+
 tldr --update
 systemctl enable sddm
 systemctl enable bluetooth
 systemctl enable sshd
+
 
 groupadd libvirtd
 useradd -g "$NAME" libvirtd
@@ -203,17 +213,25 @@ sed -i "s/^#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/" /etc/libvi
 sed -i "s/^#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/" /etc/libvirt/libvirtd.conf
 systemctl enable libvirtd
 
+
+
 cat <<LIB > /etc/sddm.conf
 [Users]
 HideUsers=libvirt
 LIB
 
+
+
 echo "#PasswordAuthentication no" > /etc/ssh/sshd_config.d/20-force_publickey_auth.conf         #configure manually
 echo "#AuthenticationMethod Publickey" >> /etc/ssh/sshd_config.d/20-force_publickey_auth.conf   #configure manually
+
+
 
 (cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
 (cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch)
 (cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
+
+
 
 (cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv)
 (cd /home/"$NAME"/git && git clone https://github.com/CapuUnknown/my-scripts.git)
@@ -225,6 +243,7 @@ ln -s /home/"$NAME"/git/my-scripts/subs-all.sh /usr/local/bin/subs-all.sh
 ln -s /home/"$NAME"/git/my-scripts/zen-iw.sh /usr/local/bin/zen-iw.sh
 ln -s /home/"$NAME"/git/my-scripts/zen-subs.sh /usr/local/bin/zen-subs.sh
 ln -s /home/"$NAME"/git/my-scripts/zipper.sh /usr/local/bin/zipper.sh
+
 
 
 cat <<EOF > /home/"$NAME"/.config/plasma-localerc
@@ -243,10 +262,7 @@ LC_TIME=de_DE.UTF-8
 LANGUAGE=en_US
 EOF
 
-cat <<KWL > /home/"$NAME"/.config/kwalletrc
-[Wallet]
-Enabled=false
-KWL
+
 
 install -m 755 <(cat <<AUR
 #!/usr/bin/env bash
@@ -278,11 +294,14 @@ flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonl
 
 sudo rm /home/"$NAME"/Desktop/execute.sh
 
+sudo pacman -Qdtq | sudo pacman -Rns -
+
 exit
 AUR
 ) /home/"$NAME"/Desktop/execute.sh
-
 chown "$NAME":"$NAME" /home/"$NAME"/Desktop/execute.sh
+
+
 
 cat <<BRC > /home/"$NAME"/.bashrc
 #
@@ -296,7 +315,6 @@ cat <<BRC > /home/"$NAME"/.bashrc
 alias s='source ~/.bashrc'
 alias c='clear'
 alias v='nvim'
-# alias sudo='sudo '
 alias cat='bat'
 alias fzf='fzf --preview="cat {}"'
 alias find='find 2>/dev/null'
@@ -312,6 +330,7 @@ alias renamer='renamer.sh'
 alias zipper='zipper.sh'
 alias subs='subs.sh'
 alias subs-all='subs-all.sh'
+alias zen-subs='zen-subs.sh'
 alias convert='convert.sh'
 alias formatter='formatter.sh'
 alias imagewriter='imagewriter.sh'
@@ -336,6 +355,8 @@ HISTFILE=~/.bash_history
 
 export MANPAGER='nvim +Man!'
 BRC
+
+
 
 clear
 echo "___________________________________________________________"
