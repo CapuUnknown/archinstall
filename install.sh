@@ -141,6 +141,7 @@ main
 #TODO: one time service to launch next script after restart
 #TODO: Whiptail to launch next script
 #TODO: Password after AUR(?)
+#TODO: custom grub.cfg
 
 cat <<REALEND >/mnt/next.sh
 #!/usr/bin/env bash
@@ -173,7 +174,7 @@ sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
 sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
 
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk wine winetricks thunderbird ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv --noconfirm --needed
 
 # Login Manager/Desktp Manager
 # ly sddm lightdm gdm etc
@@ -251,7 +252,7 @@ install -m 755 <(cat <<AUR
 #!/usr/bin/env bash
 
 (cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc)
-yes | yay -S qdiskinfo librewolf-bin wtf wireguird polymc vesktop qdiskinfo mono-git --mflags "--skippgpcheck"
+yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf wireguird polymc vesktop qdiskinfo mono-git --mflags "--skippgpcheck"
 
 cat <<UFW > /home/"$NAME"/Desktop/ufww.sh
 #!/usr/bin/env bash
@@ -314,9 +315,8 @@ alias subs-all='subs-all.sh'
 alias convert='convert.sh'
 alias formatter='formatter.sh'
 alias imagewriter='imagewriter.sh'
-alias starpoint='ssh -Y capu@starpoint'
-alias centurion='ssh -Y capu@centurion'
-alias capuserver='ssh capu@192.168.178.57'
+alias procyon='ssh -Y capu@procyon'
+alias ptolemy='ssh capu@ptolemy'
 
 PS1='[\u@\h \W]\$ '
 
@@ -337,11 +337,14 @@ HISTFILE=~/.bash_history
 export MANPAGER='nvim +Man!'
 BRC
 
+clear
 echo "___________________________________________________________"
 echo "Installation complete, system will reboot in 5 seconds"
 echo "___________________________________________________________"
+echo
 
-sleep 5
+sleep 1 && echo "="
+sleep 4
 
 REALEND
 
