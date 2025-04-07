@@ -52,9 +52,8 @@ device() {
   done
 
   DEVICE="$result"
-  read -p "debug"
   cfdisk "$DEVICE"
-  read -p "debug"
+
   if [[ "$DEVICE" == "/dev/nvme"* ]]; then
 
     mkfs.ext4 "$DEVICE"p2
