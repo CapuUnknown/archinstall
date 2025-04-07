@@ -133,6 +133,10 @@ rootpw() {
 
 main
 
+#TODO: .bashrc breaks because variables
+#TODO: starship breaks
+#TODO: lazynvim permissions break (myscripts is root)
+#TODO: Skip password, run password after execute.sh because english locale
 #TODO: Tip: curl into executable, don't pipe into shell
 #TODO: Clear screen
 #TODO: Ability to cancel
@@ -239,7 +243,7 @@ LIB
 
 
 echo "#PasswordAuthentication no" > /etc/ssh/sshd_config.d/20-force_publickey_auth.conf         #configure manually
-echo "#AuthenticationMethod Publickey" >> /etc/ssh/sshd_config.d/20-force_publickey_auth.conf   #configure manually
+echo "#AuthenticationMethods publickey" >> /etc/ssh/sshd_config.d/20-force_publickey_auth.conf   #configure manually
 
 
 
