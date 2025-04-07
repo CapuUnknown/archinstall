@@ -133,6 +133,7 @@ rootpw() {
 
 main
 
+#TODO: Tip: curl into executable, don't pipe into shell
 #TODO: Clear screen
 #TODO: Ability to cancel
 #TODO: Claritiy on select disk, which disk is which
