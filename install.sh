@@ -134,7 +134,6 @@ rootpw() {
 
 main
 
-#TODO: enable cronie.service before running timeshift wizard
 #TODO: auto-cpufreq & other Laptop packages and utilities
 #TODO: DM, DE and browser choice
 #TODO: optional package checkbox
@@ -183,7 +182,7 @@ echo "$NAME":"$USERPW" | chpasswd
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
 
-systemctl enable NetworkManager
+systemctl enable NetworkManager.service
 
 
 grub-install "$DEVICE"
@@ -196,14 +195,27 @@ echo "KEYMAP=de-latin1" > /etc/vconsole.conf
 sed -i "s/^#\[multilib\]/[multilib]/" /etc/pacman.conf
 sed -i "/^\[multilib\]/ {n; s|^#Include = /etc/pacman.d/mirrorlist|Include = /etc/pacman.d/mirrorlist|}" /etc/pacman.conf
 
+
+cat << LIZ >> /etc/pacman.conf
+[lizardbyte]
+SigLevel = Optional
+Server = https://github.com/LizardByte/pacman-repo/releases/latest/download
+
+#[lizardbyte-beta]
+#SigLevel = Optional
+#Server = https://github.com/LizardByte/pacman-repo/releases/download/beta
+LIZ
+
+
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine --noconfirm --needed
 
 
 tldr --update
-systemctl enable sddm
-systemctl enable bluetooth
-systemctl enable sshd
+systemctl enable sddm.service
+systemctl enable bluetooth.service
+systemctl enable sshd.service
+systemctl enable cronie.service
 
 
 groupadd libvirtd
@@ -211,7 +223,7 @@ useradd -g "$NAME" libvirtd
 usermod -aG libvirt "$NAME"
 sed -i "s/^#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/" /etc/libvirt/libvirtd.conf
 sed -i "s/^#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/" /etc/libvirt/libvirtd.conf
-systemctl enable libvirtd
+systemctl enable libvirtd.service
 
 
 
@@ -340,7 +352,9 @@ alias ptolemy='ssh capu@ptolemy'
 PS1='[\u@\h \W]\$ '
 
 # Starship
-eval "$(starship init bash)"
+if [ "$TERM" != "linux" ]; then
+  eval "$(starship init bash)"
+fi
 
 # Eternal bash history.
 export HISTFILESIZE=
