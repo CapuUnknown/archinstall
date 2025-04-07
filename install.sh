@@ -52,9 +52,9 @@ device() {
   done
 
   DEVICE="$result"
-  #TODO:Partitioning hint EFI, Root & Swap
+  read -p "debug"
   cfdisk "$DEVICE"
-
+  read -p "debug"
   if [[ "$DEVICE" == "/dev/nvme"* ]]; then
 
     mkfs.ext4 "$DEVICE"p2
@@ -134,6 +134,10 @@ rootpw() {
 
 main
 
+#TODO: Clear screen
+#TODO: Ability to cancel
+#TODO: Claritiy on select disk, which disk is which
+#TODO: Partitioning hint EFI, Root & Swap
 #TODO: auto-cpufreq & other Laptop packages and utilities
 #TODO: DM, DE and browser choice
 #TODO: optional package checkbox
