@@ -133,10 +133,10 @@ rootpw() {
 
 main
 
+#TODO: Package Array list packages=(a,b,c)
 #TODO: .bashrc breaks because variables
 #TODO: starship breaks
 #TODO: lazynvim permissions break (myscripts is root)
-#TODO: Skip password, run password after execute.sh because english locale
 #TODO: Tip: curl into executable, don't pipe into shell
 #TODO: Clear screen
 #TODO: Ability to cancel
@@ -147,8 +147,8 @@ main
 #TODO: optional package checkbox
 #TODO: one time service to launch next script after restart
 #TODO: Whiptail to launch next script
-#TODO: Password after AUR(?)
-#TODO: custom grub.cfg
+#TODO: custom grub.cfg & theme
+#TODO: extract post-install to new script
 
 # Login Manager/Desktp Manager
 # ly sddm lightdm gdm etc
@@ -188,6 +188,8 @@ echo "$NAME":"$USERPW" | chpasswd
 
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/99_wheel-nopasswd
+chmod 440 /etc/sudoers.d/99_wheel-nopasswd
 
 
 systemctl enable NetworkManager.service
@@ -218,6 +220,8 @@ LIZ
 pacman -Syu --noconfirm --needed
 pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine --noconfirm --needed
 
+su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
+yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf wireguird polymc vesktop qdiskinfo mono-git --noconfirm --mflags --skippgpcheck
 
 tldr --update
 systemctl enable sddm.service
@@ -234,21 +238,13 @@ sed -i "s/^#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/" /etc/libvi
 systemctl enable libvirtd.service
 
 
-
-cat <<LIB > /etc/sddm.conf
-[Users]
-HideUsers=libvirt
-LIB
-
-
-
 echo "#PasswordAuthentication no" > /etc/ssh/sshd_config.d/20-force_publickey_auth.conf         #configure manually
 echo "#AuthenticationMethods publickey" >> /etc/ssh/sshd_config.d/20-force_publickey_auth.conf   #configure manually
 
 
 
 (cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
-(cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch)
+(cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch tealdeer)
 (cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
 
 
@@ -283,12 +279,15 @@ LANGUAGE=en_US
 EOF
 
 
+cat <<TLD > /home/"$NAME"/.config/tealdeer/config.toml
+[updates]
+auto_update = true
+TLD
+
 
 install -m 755 <(cat <<AUR
 #!/usr/bin/env bash
 
-(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc)
-yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf wireguird polymc vesktop qdiskinfo mono-git --mflags "--skippgpcheck"
 
 cat <<UFW > /home/"$NAME"/Desktop/ufww.sh
 #!/usr/bin/env bash
