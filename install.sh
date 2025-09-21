@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 main() {
 
@@ -136,7 +136,7 @@ main
 #TODO: Package Array list packages=(a,b,c)
 #TODO: .bashrc breaks because variables
 #TODO: starship breaks
-#TODO: lazynvim permissions break (myscripts is root)
+#TODO: lazyvim permissions break (myscripts git dir is root)
 #TODO: Tip: curl into executable, don't pipe into shell
 #TODO: Clear screen
 #TODO: Ability to cancel
@@ -166,7 +166,7 @@ main
 # bash zsh fish etc
 
 cat <<REALEND >/mnt/next.sh
-#!/usr/bin/env bash
+#!/bin/bash
 
 ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 hwclock --systohc
@@ -286,11 +286,11 @@ TLD
 
 
 install -m 755 <(cat <<AUR
-#!/usr/bin/env bash
+#!/bin/bash
 
 
 cat <<UFW > /home/"$NAME"/Desktop/ufww.sh
-#!/usr/bin/env bash
+#!/bin/bash
 
 localectl set-keymap de-latin1
 
