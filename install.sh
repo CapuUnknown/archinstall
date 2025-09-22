@@ -140,7 +140,7 @@ main
 #TODO: Tip: curl into executable, don't pipe into shell
 #TODO: Clear screen
 #TODO: Ability to cancel
-#TODO: Claritiy on select disk, which disk is which
+#TODO: Clarity on select disk, which disk is which
 #TODO: Partitioning hint EFI, Root & Swap
 #TODO: auto-cpufreq & other Laptop packages and utilities
 #TODO: DM, DE and browser choice
@@ -149,6 +149,7 @@ main
 #TODO: Whiptail to launch next script
 #TODO: custom grub.cfg & theme
 #TODO: extract post-install to new script
+#TODO: symbolic links von git automatisieren
 
 # Login Manager/Desktp Manager
 # ly sddm lightdm gdm etc
@@ -218,10 +219,10 @@ LIZ
 
 
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam lutris scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine jp2a lact cmake zoxide nodejs vlc-plugins-all rpi-imager --noconfirm --needed
 
 su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
-yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf wireguird polymc vesktop qdiskinfo mono-git --noconfirm --mflags --skippgpcheck
+yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf modrinth-app-bin vesktop qdiskinfo mono-git --noconfirm --mflags --skippgpcheck
 
 tldr --update
 systemctl enable sddm.service
@@ -242,11 +243,9 @@ echo "#PasswordAuthentication no" > /etc/ssh/sshd_config.d/20-force_publickey_au
 echo "#AuthenticationMethods publickey" >> /etc/ssh/sshd_config.d/20-force_publickey_auth.conf   #configure manually
 
 
-
 (cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
 (cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch tealdeer)
 (cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
-
 
 
 (cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv)
@@ -259,7 +258,6 @@ ln -s /home/"$NAME"/git/my-scripts/subs-all.sh /usr/local/bin/subs-all.sh
 ln -s /home/"$NAME"/git/my-scripts/zen-iw.sh /usr/local/bin/zen-iw.sh
 ln -s /home/"$NAME"/git/my-scripts/zen-subs.sh /usr/local/bin/zen-subs.sh
 ln -s /home/"$NAME"/git/my-scripts/zipper.sh /usr/local/bin/zipper.sh
-
 
 
 cat <<EOF > /home/"$NAME"/.config/plasma-localerc
@@ -309,7 +307,7 @@ UFW
 
 sudo sh /home/"$NAME"/Desktop/ufww.sh
 
-flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonlight_stream.Moonlight com.spotify.Client com.vysp3r.ProtonPlus io.github.Qalculate io.github.flattool.Warehouse io.github.giantpinkrobots.flatsweep io.github.peazip.PeaZip io.missioncenter.MissionCenter me.timschneeberger.GalaxyBudsClient net.lutris.Lutris net.pcsx2.PCSX2 net.rpcs3.RPCS3 org.duckstation.DuckStation org.raspberrypi.rpi-imager -y
+flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonlight_stream.Moonlight com.spotify.Client com.vysp3r.ProtonPlus io.github.Qalculate io.github.flattool.Warehouse io.github.giantpinkrobots.flatsweep io.github.peazip.PeaZip io.missioncenter.MissionCenter me.timschneeberger.GalaxyBudsClient net.pcsx2.PCSX2 net.rpcs3.RPCS3 -y
 
 sudo rm /home/"$NAME"/Desktop/execute.sh
 
@@ -319,64 +317,6 @@ exit
 AUR
 ) /home/"$NAME"/Desktop/execute.sh
 chown "$NAME":"$NAME" /home/"$NAME"/Desktop/execute.sh
-
-
-
-cat <<BRC > /home/"$NAME"/.bashrc
-#
-# ~/.bashrc
-#
-
-# If not running interactively, don't do anything
-[[ $- != *i* ]] && return
-
-# Aliases
-alias s='source ~/.bashrc'
-alias c='clear'
-alias v='nvim'
-alias cat='bat'
-alias fzf='fzf --preview="cat {}"'
-alias find='find 2>/dev/null'
-alias ls='lsd --color=auto'
-alias ll='ls -alF --color=auto'
-alias grep='grep --color=auto'
-alias disk='df -h'
-alias ga='git add .'
-alias gc='git commit'
-alias gp='git push origin main'
-alias gs='git status'
-alias renamer='renamer.sh'
-alias zipper='zipper.sh'
-alias subs='subs.sh'
-alias subs-all='subs-all.sh'
-alias zen-subs='zen-subs.sh'
-alias convert='convert.sh'
-alias formatter='formatter.sh'
-alias imagewriter='imagewriter.sh'
-alias procyon='ssh -Y capu@procyon'
-alias ptolemy='ssh capu@ptolemy'
-
-PS1='[\u@\h \W]\$ '
-
-# Starship
-if [ "$TERM" != "linux" ]; then
-  eval "$(starship init bash)"
-fi
-
-# Eternal bash history.
-export HISTFILESIZE=
-export HISTSIZE=
-
-# Fastfetch
-fastfetch
-
-# fzf list & search
-source <(fzf --bash)
-HISTFILE=~/.bash_history
-
-export MANPAGER='nvim +Man!'
-BRC
-
 
 
 clear
