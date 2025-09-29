@@ -8,6 +8,9 @@ main() {
   hostname
   userpw
   rootpw
+  clear
+  lsblk
+  read -rp "1)EFI\n2)Root\n3)Swap"
   device
 
   pacstrap /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
@@ -133,39 +136,6 @@ rootpw() {
 
 main
 
-#TODO: Package Array list packages=(a,b,c)
-#TODO: .bashrc breaks because variables
-#TODO: starship breaks
-#TODO: lazyvim permissions break (myscripts git dir is root)
-#TODO: Tip: curl into executable, don't pipe into shell
-#TODO: Clear screen
-#TODO: Ability to cancel
-#TODO: Clarity on select disk, which disk is which
-#TODO: Partitioning hint EFI, Root & Swap
-#TODO: auto-cpufreq & other Laptop packages and utilities
-#TODO: DM, DE and browser choice
-#TODO: optional package checkbox
-#TODO: one time service to launch next script after restart
-#TODO: Whiptail to launch next script
-#TODO: custom grub.cfg & theme
-#TODO: extract post-install to new script
-#TODO: symbolic links von git automatisieren
-
-# Login Manager/Desktp Manager
-# ly sddm lightdm gdm etc
-#
-# Desktop Environemnt
-# xfce plasma gnome cinnamon etc
-#
-# Browser
-# LibreWolf Brave Midori QuteBrowser etc Chromium Gecko
-#
-# Terminal emulator
-# konsole kitty alacritty ghostty etc
-#
-# shell
-# bash zsh fish etc
-
 cat <<REALEND >/mnt/next.sh
 #!/bin/bash
 
@@ -195,6 +165,8 @@ chmod 440 /etc/sudoers.d/99_wheel-nopasswd
 
 systemctl enable NetworkManager.service
 
+sed -i "s/^#DNS=/DNS=192.168.178.34/" /etc/systemd/resolved.conf
+systemctl restart systemd-resolved
 
 grub-install "$DEVICE"
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -217,12 +189,16 @@ Server = https://github.com/LizardByte/pacman-repo/releases/latest/download
 #Server = https://github.com/LizardByte/pacman-repo/releases/download/beta
 LIZ
 
+(cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
+(cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch tealdeer)
+(cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
 
 pacman -Syu --noconfirm --needed
 pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam lutris scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine jp2a lact cmake zoxide nodejs vlc-plugins-all rpi-imager --noconfirm --needed
 
+
 su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
-yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf modrinth-app-bin vesktop mono-git --noconfirm --mflags --skippgpcheck
+su - "$NAME" -c '(yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf modrinth-app-bin vesktop mono-git --noconfirm --mflags --skippgpcheck)'
 
 tldr --update
 systemctl enable sddm.service
@@ -243,12 +219,7 @@ echo "#PasswordAuthentication no" > /etc/ssh/sshd_config.d/20-force_publickey_au
 echo "#AuthenticationMethods publickey" >> /etc/ssh/sshd_config.d/20-force_publickey_auth.conf   #configure manually
 
 
-(cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
-(cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch tealdeer)
-(cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
-
-
-(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv)
+(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip && bsdtar xvf JetBrainsMono.zip && fc-cache -fv)
 (cd /home/"$NAME"/git && git clone https://github.com/CapuUnknown/my-scripts.git)
 ln -s /home/"$NAME"/git/my-scripts/nvim /home/"$NAME"/.config
 ln -s /home/"$NAME"/git/my-scripts/formatter.sh /usr/local/bin/formatter.sh
@@ -318,15 +289,12 @@ AUR
 ) /home/"$NAME"/Desktop/execute.sh
 chown "$NAME":"$NAME" /home/"$NAME"/Desktop/execute.sh
 
-
 clear
 echo "___________________________________________________________"
-echo "Installation complete, system will reboot in 5 seconds"
+echo "Installation complete, system will reboot in 3 seconds"
 echo "___________________________________________________________"
 echo
-
-sleep 1 && echo "="
-sleep 4
+sleep 3
 
 REALEND
 
