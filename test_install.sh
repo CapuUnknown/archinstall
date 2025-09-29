@@ -10,7 +10,7 @@ main() {
   rootpw
   clear
   lsblk
-  read -p ""
+  read -rp "1)EFI\n2)Root\n3)Swap"
   device
 
   pacstrap /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
@@ -136,36 +136,10 @@ rootpw() {
 
 main
 
-#TODO: Package Array list packages=(a,b,c)
 #TODO: lazyvim permissions break (myscripts git dir is root)
-#TODO: Tip: curl into executable, don't pipe into shell
-#TODO: Clear screen
 #TODO: Ability to cancel
-#TODO: Partitioning hint EFI, Root & Swap
-#TODO: auto-cpufreq & other Laptop packages and utilities
-#TODO: DM, DE and browser choice
-#TODO: optional package checkbox
-#TODO: one time service to launch next script after restart
-#TODO: Whiptail to launch next script
-#TODO: custom grub.cfg & theme
-#TODO: extract post-install to new script
 #TODO: symbolic links von git automatisieren
-#TODO pull and install certificates from server & pull install file from server
-
-# Login Manager/Desktp Manager
-# ly sddm lightdm gdm etc
-#
-# Desktop Environemnt
-# xfce plasma gnome cinnamon etc
-#
-# Browser
-# LibreWolf Brave Midori QuteBrowser etc Chromium Gecko
-#
-# Terminal emulator
-# konsole kitty alacritty ghostty etc
-#
-# shell
-# bash zsh fish etc
+#TODO pull and install certificates from server & pull install file from server, FTP
 
 cat <<REALEND >/mnt/next.sh
 #!/bin/bash
@@ -226,12 +200,11 @@ LIZ
 
 pacman -Syu --noconfirm --needed
 pacman -S plasma sddm konsole kate dolphin tealdeer bluez bluez-utils openssh timeshift ufw wget --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam lutris scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine jp2a lact cmake zoxide nodejs vlc-plugins-all rpi-imager --noconfirm --needed
+#pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam lutris scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine jp2a lact cmake zoxide nodejs vlc-plugins-all rpi-imager --noconfirm --needed
 
 
 su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
 su - "$NAME" -c '(yes | yay -S qdiskinfo wtf vesktop --noconfirm --mflags --skippgpcheck)'
-read -p ok
 #yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf modrinth-app-bin vesktop mono-git --noconfirm --mflags --skippgpcheck
 
 tldr --update
