@@ -9,7 +9,7 @@ main() {
   userpw
   rootpw
   lsblk
-  read -p
+  read -p ok
   device
 
   pacstrap /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
