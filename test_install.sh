@@ -223,12 +223,16 @@ Server = https://github.com/LizardByte/pacman-repo/releases/latest/download
 #Server = https://github.com/LizardByte/pacman-repo/releases/download/beta
 LIZ
 
+(cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
+read -p ok
+(cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch tealdeer)
+(cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
 
 pacman -Syu --noconfirm --needed
 pacman -S plasma sddm konsole kate dolphin tealdeer bluez bluez-utils openssh timeshift ufw wget --noconfirm --needed
 pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam lutris scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine jp2a lact cmake zoxide nodejs vlc-plugins-all rpi-imager --noconfirm --needed
 
-read -p ok
+
 su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
 read -p ok
 yes | yay -S qdiskinfo wtf vesktop --noconfirm --mflags --skippgpcheck
@@ -251,11 +255,6 @@ systemctl enable libvirtd.service
 
 echo "#PasswordAuthentication no" > /etc/ssh/sshd_config.d/20-force_publickey_auth.conf         #configure manually
 echo "#AuthenticationMethods publickey" >> /etc/ssh/sshd_config.d/20-force_publickey_auth.conf   #configure manually
-
-
-(cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
-(cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch tealdeer)
-(cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
 
 
 (cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip && bsdtar xvf JetBrainsMono.zip && fc-cache -fv)
