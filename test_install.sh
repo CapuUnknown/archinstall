@@ -196,10 +196,11 @@ chmod 440 /etc/sudoers.d/99_wheel-nopasswd
 
 systemctl enable NetworkManager.service
 
-sed -i "s/^#DNS= /DNS=192.168.178.34/" /etc/systemd/resolved.conf
+sed -i "s/^#DNS=/DNS=192.168.178.34/" /etc/systemd/resolved.conf
 read -p ok
 cat /etc/systemd/resolved.conf
 read -p ok
+systemctl restart systemd-resolved
 
 grub-install "$DEVICE"
 grub-mkconfig -o /boot/grub/grub.cfg
