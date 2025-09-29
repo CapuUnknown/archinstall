@@ -225,10 +225,12 @@ LIZ
 
 
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin tealdeer bluez bluez-utils openssh timeshift ufw --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin tealdeer bluez bluez-utils openssh timeshift ufw wget --noconfirm --needed
 pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam lutris scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine jp2a lact cmake zoxide nodejs vlc-plugins-all rpi-imager --noconfirm --needed
 
+read -p ok
 su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
+read -p ok
 yes | yay -S qdiskinfo wtf vesktop --noconfirm --mflags --skippgpcheck
 #yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf modrinth-app-bin vesktop mono-git --noconfirm --mflags --skippgpcheck
 
@@ -256,7 +258,7 @@ echo "#AuthenticationMethods publickey" >> /etc/ssh/sshd_config.d/20-force_publi
 (cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
 
 
-(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv)
+(cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip && bsdtar xvf JetBrainsMono.zip && fc-cache -fv)
 #(cd /home/"$NAME"/git && git clone https://github.com/CapuUnknown/my-scripts.git)
 #ln -s /home/"$NAME"/git/my-scripts/nvim /home/"$NAME"/.config
 #ln -s /home/"$NAME"/git/my-scripts/formatter.sh /usr/local/bin/formatter.sh
