@@ -219,10 +219,12 @@ LIZ
 
 
 pacman -Syu --noconfirm --needed
+pacman -S plasma sddm konsole kate dolphin tealdeer bluez bluez-utils openssh timeshift ufw
 pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam lutris scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine jp2a lact cmake zoxide nodejs vlc-plugins-all rpi-imager --noconfirm --needed
 
 su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
-yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf modrinth-app-bin vesktop mono-git --noconfirm --mflags --skippgpcheck
+yes | yay -S qdiskinfo wtf vesktop --noconfirm --mflags --skippgpcheck
+#yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf modrinth-app-bin vesktop mono-git --noconfirm --mflags --skippgpcheck
 
 tldr --update
 systemctl enable sddm.service
@@ -249,15 +251,15 @@ echo "#AuthenticationMethods publickey" >> /etc/ssh/sshd_config.d/20-force_publi
 
 
 (cd /home/"$NAME"/.local/share/fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Agave.zip && bsdtar xvf Agave.zip && fc-cache -fv)
-(cd /home/"$NAME"/git && git clone https://github.com/CapuUnknown/my-scripts.git)
-ln -s /home/"$NAME"/git/my-scripts/nvim /home/"$NAME"/.config
-ln -s /home/"$NAME"/git/my-scripts/formatter.sh /usr/local/bin/formatter.sh
-ln -s /home/"$NAME"/git/my-scripts/imagewriter.sh /usr/local/bin/imagewriter.sh
-ln -s /home/"$NAME"/git/my-scripts/subs.sh /usr/local/bin/subs.sh
-ln -s /home/"$NAME"/git/my-scripts/subs-all.sh /usr/local/bin/subs-all.sh
-ln -s /home/"$NAME"/git/my-scripts/zen-iw.sh /usr/local/bin/zen-iw.sh
-ln -s /home/"$NAME"/git/my-scripts/zen-subs.sh /usr/local/bin/zen-subs.sh
-ln -s /home/"$NAME"/git/my-scripts/zipper.sh /usr/local/bin/zipper.sh
+#(cd /home/"$NAME"/git && git clone https://github.com/CapuUnknown/my-scripts.git)
+#ln -s /home/"$NAME"/git/my-scripts/nvim /home/"$NAME"/.config
+#ln -s /home/"$NAME"/git/my-scripts/formatter.sh /usr/local/bin/formatter.sh
+#ln -s /home/"$NAME"/git/my-scripts/imagewriter.sh /usr/local/bin/imagewriter.sh
+#ln -s /home/"$NAME"/git/my-scripts/subs.sh /usr/local/bin/subs.sh
+#ln -s /home/"$NAME"/git/my-scripts/subs-all.sh /usr/local/bin/subs-all.sh
+#ln -s /home/"$NAME"/git/my-scripts/zen-iw.sh /usr/local/bin/zen-iw.sh
+#ln -s /home/"$NAME"/git/my-scripts/zen-subs.sh /usr/local/bin/zen-subs.sh
+#ln -s /home/"$NAME"/git/my-scripts/zipper.sh /usr/local/bin/zipper.sh
 
 
 cat <<EOF > /home/"$NAME"/.config/plasma-localerc
@@ -292,8 +294,8 @@ cat <<UFW > /home/"$NAME"/Desktop/ufww.sh
 
 localectl set-keymap de-latin1
 
-virsh net-start default
-virsh net-autostart default
+#virsh net-start default
+#virsh net-autostart default
 
 ufw enable
 ufw allow from 192.168.178.0/24
@@ -307,7 +309,8 @@ UFW
 
 sudo sh /home/"$NAME"/Desktop/ufww.sh
 
-flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonlight_stream.Moonlight com.spotify.Client com.vysp3r.ProtonPlus io.github.Qalculate io.github.flattool.Warehouse io.github.giantpinkrobots.flatsweep io.github.peazip.PeaZip io.missioncenter.MissionCenter me.timschneeberger.GalaxyBudsClient net.pcsx2.PCSX2 net.rpcs3.RPCS3 -y
+flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonlight_stream.Moonlight com.spotify.Client com.vysp3r.ProtonPlus io.github.Qalculate io.github.flattool.Warehouse io.github.giantpinkrobots.flatsweep io.github.peazip.PeaZip io.missioncenter.MissionCenter me.timschneeberger.GalaxyBudsClient -y
+#flatpak install com.bitwarden.desktop com.dec05eba.gpu_screen_recorder com.moonlight_stream.Moonlight com.spotify.Client com.vysp3r.ProtonPlus io.github.Qalculate io.github.flattool.Warehouse io.github.giantpinkrobots.flatsweep io.github.peazip.PeaZip io.missioncenter.MissionCenter me.timschneeberger.GalaxyBudsClient net.pcsx2.PCSX2 net.rpcs3.RPCS3 -y
 
 sudo rm /home/"$NAME"/Desktop/execute.sh
 
