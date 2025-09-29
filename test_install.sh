@@ -8,6 +8,8 @@ main() {
   hostname
   userpw
   rootpw
+  lsblk
+  read -p
   device
 
   pacstrap /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
@@ -134,13 +136,10 @@ rootpw() {
 main
 
 #TODO: Package Array list packages=(a,b,c)
-#TODO: .bashrc breaks because variables
-#TODO: starship breaks
 #TODO: lazyvim permissions break (myscripts git dir is root)
 #TODO: Tip: curl into executable, don't pipe into shell
 #TODO: Clear screen
 #TODO: Ability to cancel
-#TODO: Clarity on select disk, which disk is which
 #TODO: Partitioning hint EFI, Root & Swap
 #TODO: auto-cpufreq & other Laptop packages and utilities
 #TODO: DM, DE and browser choice
@@ -150,6 +149,7 @@ main
 #TODO: custom grub.cfg & theme
 #TODO: extract post-install to new script
 #TODO: symbolic links von git automatisieren
+#TODO pull and install certificates from server & pull install file from server
 
 # Login Manager/Desktp Manager
 # ly sddm lightdm gdm etc
@@ -195,6 +195,10 @@ chmod 440 /etc/sudoers.d/99_wheel-nopasswd
 
 systemctl enable NetworkManager.service
 
+sed -i "s/^#DNS= /DNS=192.168.178.34/" /etc/systemd/resolved.conf
+read -p ok
+cat /etc/systemd/resolved.conf
+read -p ok
 
 grub-install "$DEVICE"
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -219,7 +223,7 @@ LIZ
 
 
 pacman -Syu --noconfirm --needed
-pacman -S plasma sddm konsole kate dolphin tealdeer bluez bluez-utils openssh timeshift ufw
+pacman -S plasma sddm konsole kate dolphin tealdeer bluez bluez-utils openssh timeshift ufw --noconfirm --needed
 pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-wiki-docs btop rocm-smi-lib openssh bluez bluez-utils npm ufw man man-db zenity lazygit bat pipewire pipewire-jack pipewire-pulse pipewire-alsa pipewire-audio wireplumber noto-fonts-cjk noto-fonts-emoji noto-fonts steam lutris scrcpy gimp qbittorrent tealdeer jdk-openjdk jdk21-openjdk mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon wine winetricks ffmpeg xdg-desktop-portal-gtk linux-headers 7zip zenity libreoffice-fresh gwenview okular kdegraphics-thumbnailers ffmpegthumbs unzip mono wine-mono kdeconnect obs-studio flatpak starship wget qemu-full virt-manager bridge-utils archlinux-keyring virt-viewer dnsmasq libguestfs timeshift wireguard-tools net-tools wol python-pip python-pipenv bind sunshine jp2a lact cmake zoxide nodejs vlc-plugins-all rpi-imager --noconfirm --needed
 
 su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
@@ -321,7 +325,7 @@ AUR
 ) /home/"$NAME"/Desktop/execute.sh
 chown "$NAME":"$NAME" /home/"$NAME"/Desktop/execute.sh
 
-
+read -p ok
 clear
 echo "___________________________________________________________"
 echo "Installation complete, system will reboot in 5 seconds"
