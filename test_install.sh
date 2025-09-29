@@ -8,8 +8,9 @@ main() {
   hostname
   userpw
   rootpw
+  clear
   lsblk
-  read -p ok
+  read -p ""
   device
 
   pacstrap /mnt base grub linux linux-firmware sof-firmware base-devel networkmanager efibootmgr neovim git --noconfirm --needed
