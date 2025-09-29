@@ -221,7 +221,6 @@ Server = https://github.com/LizardByte/pacman-repo/releases/latest/download
 LIZ
 
 (cd /home/"$NAME" && sudo -u "$NAME" mkdir -pv Ordner Desktop AUR git .config .local/share)
-read -p ok
 (cd /home/"$NAME"/.config && sudo -u "$NAME" mkdir -pv autostart btop fastfetch tealdeer)
 (cd /home/"$NAME"/.local/share && sudo -u "$NAME" mkdir -pv fonts konsole)
 
@@ -231,8 +230,8 @@ pacman -S plasma sddm konsole kate dolphin fzf lsd fastfetch ncdu wikiman arch-w
 
 
 su - "$NAME" -c '(cd /home/"$NAME"/AUR && git clone https://aur.archlinux.org/yay.git && cd /home/"$NAME"/AUR/yay && makepkg -sirc --noconfirm)'
+su - "$NAME" -c '(yes | yay -S qdiskinfo wtf vesktop --noconfirm --mflags --skippgpcheck)'
 read -p ok
-yes | yay -S qdiskinfo wtf vesktop --noconfirm --mflags --skippgpcheck
 #yes | yay -S qdiskinfo librewolf-bin betterbird-bin wtf modrinth-app-bin vesktop mono-git --noconfirm --mflags --skippgpcheck
 
 tldr --update
@@ -325,7 +324,6 @@ AUR
 ) /home/"$NAME"/Desktop/execute.sh
 chown "$NAME":"$NAME" /home/"$NAME"/Desktop/execute.sh
 
-read -p ok
 clear
 echo "___________________________________________________________"
 echo "Installation complete, system will reboot in 5 seconds"
