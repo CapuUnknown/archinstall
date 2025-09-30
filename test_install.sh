@@ -140,6 +140,9 @@ main
 #TODO: Ability to cancel
 #TODO: symbolic links von git automatisieren
 #TODO pull and install certificates from server & pull install file from server, FTP
+#TODO manual git login Bad
+#TODO smth CMake and mono-git junk
+#TODO execute.sh add exit 0 or wht it's called
 
 cat <<REALEND >/mnt/next.sh
 #!/bin/bash
