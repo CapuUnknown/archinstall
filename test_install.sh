@@ -143,6 +143,7 @@ main
 #TODO manual git login Bad
 #TODO smth CMake and mono-git junk
 #TODO execute.sh add exit 0 or wht it's called
+#TODO add jellyfin player, fsearch, lsfg, shotcut, pavucontrol
 
 cat <<REALEND >/mnt/next.sh
 #!/bin/bash
